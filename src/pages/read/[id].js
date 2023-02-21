@@ -1,23 +1,22 @@
-import Link from 'next/link'
-export default function Home() {
+import { useRouter } from 'next/router';
+import Layout from '../../components/layout';
+import { useEffect, useState } from 'react';
+export async function getServerSideProps(context) {
+  console.log('getServerSideProps');
+  const resp =  await fetch(process.env.NEXT_PUBLIC_API_URL+'topics/'+context.params.id);
+  const result = await resp.json();
+  console.log('result', result);
+  return {
+    props: {
+      topic: result
+    }, // will be passed to the page component as props
+  }
+}
+export default function Read({topic}) {
   return (
     <>
-      <h1>
-        <Link href="/">WEB</Link>
-      </h1>
-      <ol>
-        <li><Link href="/read/1">html</Link></li>
-        <li><Link href="/read/2">css</Link></li>
-      </ol>
-      <article>
-        <h2>Read</h2>
-        Hello, Read
-      </article>
-      <ul>
-        <li><Link href="/create">Create</Link></li>
-        <li><Link href="/update">Update</Link></li>
-        <li><Link href="/delete">Delete</Link></li>
-      </ul>
+      <h2>{topic.title}</h2>
+      {topic.body}
     </>
   )
 }
